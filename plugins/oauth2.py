@@ -24,7 +24,7 @@ from oslo_log import log
 
 LOG = log.getLogger(__name__)
 
-@dependency.optional('oauth2_api')
+@dependency.requires('oauth2_api')
 class OAuth2(auth.AuthMethodHandler):
 
     method = 'oauth2'
