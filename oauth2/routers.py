@@ -26,6 +26,7 @@ build_parameter_relation = functools.partial(
     json_home.build_v3_extension_parameter_relation,
     extension_name='OS-OAUTH2', extension_version='1.0')
 
+
 class OAuth2Extension(wsgi.V3ExtensionRouter):
     """API Endpoints for the OAuth2 extension.
 
@@ -60,7 +61,7 @@ class OAuth2Extension(wsgi.V3ExtensionRouter):
         consumer_controller = controllers.ConsumerCrudV3()
         access_token_controller = controllers.AccessTokenEndpointV3()
         authorization_code_controller = controllers.AuthorizationCodeEndpointV3()
-        oauth2_controller = controllers.OAuth2ControllerV3() 
+        oauth2_controller = controllers.OAuth2ControllerV3()
 
         # Admin only consumer CRUD
         self._add_resource(
@@ -92,7 +93,7 @@ class OAuth2Extension(wsgi.V3ExtensionRouter):
                 'user_id':
                 build_parameter_relation(parameter_name='user_id'),
             })
-        
+
         self._add_resource(
             mapper, access_token_controller,
             path='/users/{user_id}' + self.PATH_PREFIX + '/access_tokens/{access_token_id}',
@@ -114,7 +115,7 @@ class OAuth2Extension(wsgi.V3ExtensionRouter):
                 'user_id':
                 build_parameter_relation(parameter_name='user_id'),
             })
-        
+
         # OAuth2 flow calls
         self._add_resource(
             mapper, oauth2_controller,
@@ -128,5 +129,3 @@ class OAuth2Extension(wsgi.V3ExtensionRouter):
             path=self.PATH_PREFIX + '/access_token',
             post_action='create_access_token',
             rel=build_resource_relation(resource_name='access_tokens'))
-
-        

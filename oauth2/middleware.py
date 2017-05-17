@@ -14,13 +14,14 @@
 
 import urlparse
 
-from oslo.serialization import jsonutils
+from oslo_serialization import jsonutils
 
 from keystone.common import wsgi
 from keystone import exception
-from keystone.openstack.common import log
+from oslo_log import log
 
 LOG = log.getLogger(__name__)
+
 
 class UrlencodedBodyMiddleware(wsgi.Middleware):
     """Serializes urlencoded to JSON."""

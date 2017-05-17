@@ -19,7 +19,7 @@ from keystone.common import dependency
 from keystone.contrib.oauth2 import core as oauth2_core
 from keystone.contrib.oauth2 import validator
 from keystone.i18n import _
-from keystone.openstack.common import log
+from oslo_log import log
 
 
 LOG = log.getLogger(__name__)
