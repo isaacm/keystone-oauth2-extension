@@ -102,7 +102,8 @@ class OAuth2Extension(wsgi.V3ExtensionRouter):
             rel=build_resource_relation(resource_name='access_token'),
             path_vars={
                 'user_id': build_parameter_relation(parameter_name='user_id'),
-                'access_token_id': build_parameter_relation(parameter_name='access_token_id'),
+                'access_token_id': build_parameter_relation(
+                    parameter_name='access_token_id'),
             })
 
         # Resource Owner endpoint for Authorization Codes

@@ -21,7 +21,7 @@ def upgrade(migrate_engine):
 
     authorization_code_table = sql.Table('authorization_code_oauth2', meta, autoload=True)
     authorization_code_table.c.redirect_uri.alter(
-    	sql.Column('redirect_uri', sql.String(256), nullable=False))
+        sql.Column('redirect_uri', sql.String(256), nullable=False))
 
     consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.redirect_uri.alter(
@@ -34,7 +34,7 @@ def downgrade(migrate_engine):
 
     authorization_code_table = sql.Table('authorization_code_oauth2', meta, autoload=True)
     authorization_code_table.c.redirect_uri.alter(
-    	sql.Column('redirect_uri', sql.String(64), nullable=False))
+        sql.Column('redirect_uri', sql.String(64), nullable=False))
 
     consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.redirect_uri.alter(

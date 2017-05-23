@@ -29,6 +29,7 @@ from oslo_log import log
 
 LOG = log.getLogger(__name__)
 
+
 @dependency.requires('oauth2_api')
 class ConsumerCrudV3(controller.V3Controller):
 
@@ -100,6 +101,7 @@ class AuthorizationCodeEndpointV3(controller.V3Controller):
         ref = self.oauth2_api.list_authorization_codes(user_id=user_id)
         return AuthorizationCodeEndpointV3.wrap_collection(context, ref)
 
+
 @dependency.requires('oauth2_api')
 class AccessTokenEndpointV3(controller.V3Controller):
 
@@ -136,6 +138,7 @@ class AccessTokenEndpointV3(controller.V3Controller):
         """Revokes an access token"""
         self.oauth2_api.revoke_access_token(access_token_id, user_id=user_id)
 
+
 @dependency.requires('oauth2_api', 'token_provider_api')
 class OAuth2ControllerV3(controller.V3Controller):
 
@@ -144,9 +147,9 @@ class OAuth2ControllerV3(controller.V3Controller):
 
     def _extract_user_id_from_token(self, token_id):
         user_token = token_model.KeystoneToken(
-                            token_id=token_id,
-                            token_data=self.token_provider_api.validate_token(
-                                token_id))
+            token_id=token_id,
+            token_data=self.token_provider_api.validate_token(
+                token_id))
         return user_token.user_id
 
     @controller.protected()
@@ -386,16 +389,17 @@ class OAuth2ControllerV3(controller.V3Controller):
         # space separated string instead of a list. We can wait for a change in
         # Oauthlib or implement our own TokenProvider
         if status == 200:
-            response = wsgi.render_response(body,
-                                        status=(status, 'OK'),
-                                        headers=headers.items())
-            LOG.info('OAUTH2: Created Access Token %s' %body['access_token'])
+            response = wsgi.render_response(
+                body,
+                status=(status, 'OK'),
+                headers=headers.items())
+            LOG.info('OAUTH2: Created Access Token %s' % body['access_token'])
             return response
         # Build the error message and raise the corresponding error
         msg = _(body['error'])
         if hasattr(body, 'description'):
             msg = msg + ': ' + _(body['description'])
-        LOG.warning('OAUTH2: Error creating Access Token %s' %msg)
+        LOG.warning('OAUTH2: Error creating Access Token %s' % msg)
         if status == 400:
             raise exception.ValidationError(message=msg)
         elif status == 401:

@@ -60,15 +60,15 @@ class OAuth2Validator(RequestValidator):
     def validate_scopes(self, client_id, scopes, client, request, *args, **kwargs):
         # Is the client allowed to access the requested scopes?
         if not scopes:
-            return True # the client is not requesting any scope
+            return True  # the client is not requesting any scope
 
         client_dict = self.oauth2_api.get_consumer(client_id)
 
         if not client_dict['scopes']:
-            return False # the client isnt allowed any scopes
+            return False  # the client isn't allowed any scopes
 
         for scope in scopes:
-            if not scope in client_dict['scopes']:
+            if scope not in client_dict['scopes']:
                 return False
         return True
 
@@ -103,11 +103,11 @@ class OAuth2Validator(RequestValidator):
             'code': code['code'], # code is a dict with state and the code
             'consumer_id': client_id,
             'scopes': request.scopes,
-            'authorizing_user_id': request.user_id, # populated through the credentials
+            'authorizing_user_id': request.user_id,  # populated through the credentials
             'state': request.state,
             'redirect_uri': request.redirect_uri
         }
-        token_duration = 28800 # TODO(garcianavalon) extract as configuration option
+        token_duration = 28800  # TODO(garcianavalon) extract as configuration option
         # TODO(garcianavalon) find a better place to do this
         now = timeutils.utcnow()
         future = now + datetime.timedelta(seconds=token_duration)
@@ -128,7 +128,7 @@ class OAuth2Validator(RequestValidator):
             client_dict = self.oauth2_api.get_consumer_with_secret(client_id)
             if client_dict['secret'] == secret:
                 # TODO(garcianavalon) this can be done in a cleaner way
-                #if we change the consumer model attribute to client_id
+                # if we change the consumer model attribute to client_id
                 request.client = type('obj', (object,),
                     {'client_id' : client_id})
                 LOG.info('OAUTH2: succesfully authenticated client %s',
@@ -174,7 +174,10 @@ class OAuth2Validator(RequestValidator):
 
         # TODO(garcianavalon) sync with SQL backend soported grant_types
         return grant_type in [
-            'password', 'authorization_code', 'client_credentials', 'refresh_token',
+            'password',
+            'authorization_code',
+            'client_credentials',
+            'refresh_token',
         ]
 
     def save_bearer_token(self, token, request, *args, **kwargs):
@@ -183,7 +186,6 @@ class OAuth2Validator(RequestValidator):
         # the authorization code. Don't forget to save both the
         # access_token and the refresh_token and set expiration for the
         # access_token to now + expires_in seconds.
-
 
         # token is a dictionary with the following elements:
         # {
@@ -208,13 +210,15 @@ class OAuth2Validator(RequestValidator):
         else:
             user_id = request.user_id
 
-        expires_at = datetime.datetime.today() + datetime.timedelta(seconds=token['expires_in'])
+        expires_at = datetime.datetime.today() + datetime.timedelta(
+            seconds=token['expires_in'])
         access_token = {
-            'id':token['access_token'],
-            'consumer_id':consumer_id,
-            'authorizing_user_id':user_id,
+            'id': token['access_token'],
+            'consumer_id': consumer_id,
+            'authorizing_user_id': user_id,
             'scopes': request.scopes,
-            'expires_at':datetime.datetime.strftime(expires_at, '%Y-%m-%d %H:%M:%S'),
+            'expires_at': datetime.datetime.strftime(
+                expires_at, '%Y-%m-%d %H:%M:%S'),
             'refresh_token': token.get('refresh_token', None),
         }
         self.oauth2_api.store_access_token(access_token)
@@ -293,22 +297,23 @@ class OAuth2Validator(RequestValidator):
             - Refresh Token Grant
         """
         try:
-            access_token = self.oauth2_api.get_access_token_by_refresh_token(refresh_token)
+            access_token = self.oauth2_api.get_access_token_by_refresh_token(
+                refresh_token)
 
             # Validate that the refresh token is not expired
-            token_duration = 28800 # TODO(garcianavalon) extract as configuration option
-            refresh_token_duration = 14 # TODO(garcianavalon) extract as configuration option
+            token_duration = 28800  # TODO(garcianavalon) extract as configuration option
+            refresh_token_duration = 14  # TODO(garcianavalon) extract as configuration option
 
             # TODO(garcianavalon) find a better place to do this
             access_token_expiration_date = datetime.datetime.strptime(
                 access_token['expires_at'], '%Y-%m-%d %H:%M:%S')
 
-            refres_token_expiration_date = (
+            refresh_token_expiration_date = (
                 access_token_expiration_date
                 - datetime.timedelta(seconds=token_duration)
                 + datetime.timedelta(days=refresh_token_duration))
 
-            if refres_token_expiration_date < datetime.datetime.today():
+            if refresh_token_expiration_date < datetime.datetime.today():
                 return False
 
         except exception.NotFound:
@@ -318,7 +323,6 @@ class OAuth2Validator(RequestValidator):
 
         return True
 
-
     # Support for password grant
     def validate_user(self, username, password, client, request,
                       *args, **kwargs):
@@ -326,7 +330,7 @@ class OAuth2Validator(RequestValidator):
         OBS! The validation should also set the user attribute of the request
         to a valid resource owner, i.e. request.user = username or similar. If
         not set you will be unable to associate a token with a user in the
-        persistance method used (commonly, save_bearer_token).
+        persistence method used (commonly, save_bearer_token).
         :param username: Unicode username
         :param password: Unicode password
         :param client: Client object set by you, see authenticate_client.

@@ -12,8 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from keystone import auth
 from keystone import exception
+from keystone.auth.plugins import base
 from keystone.common import controller
 from keystone.common import dependency
 from keystone.contrib.oauth2 import core as oauth2_core
@@ -24,8 +24,9 @@ from oslo_log import log
 
 LOG = log.getLogger(__name__)
 
+
 @dependency.requires('oauth2_api')
-class OAuth2(auth.AuthMethodHandler):
+class OAuth2(base.AuthMethodHandler):
 
     method = 'oauth2'
 
@@ -46,7 +47,7 @@ class OAuth2(auth.AuthMethodHandler):
         request_validator = validator.OAuth2Validator()
         server = oauth2_core.Server(request_validator)
         body = {
-            'access_token':access_token_id
+            'access_token': access_token_id
         }
         valid, oauthlib_request = server.verify_request(
             uri, http_method, body, headers, required_scopes)
@@ -56,8 +57,8 @@ class OAuth2(auth.AuthMethodHandler):
         # oauthlib_request.scopes = the scopes bound to this token
         if valid:
             auth_context['user_id'] = oauthlib_request.user
-            #auth_context['access_token_id'] = access_token_id
-            #auth_context['project_id'] = project_id
+            # auth_context['access_token_id'] = access_token_id
+            # auth_context['project_id'] = project_id
             return None
         else:
             msg = _('Could not validate the access token')

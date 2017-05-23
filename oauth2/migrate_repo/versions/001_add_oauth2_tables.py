@@ -28,12 +28,12 @@ def upgrade(migrate_engine):
         sql.Column('name', sql.String(64), nullable=False),
         sql.Column('description', sql.String(64), nullable=True),
         sql.Column('secret', sql.String(128), nullable=False),
-        sql.Column('client_type', 
+        sql.Column('client_type',
             sql.Enum('confidential', name='client_type'), nullable=False),
         sql.Column('redirect_uris', sql.Text(), nullable=False),
-        sql.Column('grant_type', 
+        sql.Column('grant_type',
             sql.Enum('authorization_code', name='grant_type'), nullable=False),
-        sql.Column('response_type', 
+        sql.Column('response_type',
             sql.Enum('code', name='response_type'), nullable=False),
         sql.Column('scopes', sql.Text(), nullable=True),
         sql.Column('extra', sql.Text(), nullable=True))
@@ -43,8 +43,9 @@ def upgrade(migrate_engine):
         'authorization_code_oauth2',
         meta,
         sql.Column('code', sql.String(64), primary_key=True, nullable=False),
-        sql.Column('consumer_id', sql.String(64), sql.ForeignKey('consumer_oauth2.id'),
-                             nullable=False, index=True),
+        sql.Column('consumer_id', sql.String(64),
+                   sql.ForeignKey('consumer_oauth2.id'),
+                   nullable=False, index=True),
         sql.Column('authorizing_user_id', sql.String(64), nullable=False),
         sql.Column('expires_at', sql.String(64), nullable=False),
         sql.Column('scopes', sql.Text(), nullable=True),
@@ -59,10 +60,12 @@ def upgrade(migrate_engine):
         meta,
         sql.Column('id', sql.String(64), primary_key=True, nullable=False),
         sql.Column('user_id', sql.String(64), index=True, nullable=False),
-        sql.Column('client_id', sql.String(64), sql.ForeignKey('consumer_oauth2.id'),
-                             nullable=False, index=True),
+        sql.Column('client_id', sql.String(64),
+                   sql.ForeignKey('consumer_oauth2.id'),
+                   nullable=False, index=True),
         sql.Column('redirect_uri', sql.String(64), nullable=False),
-        sql.Column('response_type', sql.Enum('code', name='response_type'), nullable=False),
+        sql.Column('response_type', sql.Enum('code', name='response_type'),
+                   nullable=False),
         sql.Column('state', sql.String(64), nullable=True),
         sql.Column('created_at', sql.DateTime(), default=None, nullable=False),
         sql.Column('extra', sql.Text(), nullable=True))
@@ -72,8 +75,9 @@ def upgrade(migrate_engine):
         'access_token_oauth2',
         meta,
         sql.Column('id', sql.String(64), primary_key=True, nullable=False),
-        sql.Column('consumer_id', sql.String(64), sql.ForeignKey('consumer_oauth2.id'),
-                             nullable=False, index=True),
+        sql.Column('consumer_id', sql.String(64),
+                   sql.ForeignKey('consumer_oauth2.id'),
+                   nullable=False, index=True),
         sql.Column('authorizing_user_id', sql.String(64), nullable=False),
         sql.Column('expires_at', sql.String(64), nullable=False),
         sql.Column('scopes', sql.Text(), nullable=True),
@@ -82,13 +86,19 @@ def upgrade(migrate_engine):
         sql.Column('extra', sql.Text(), nullable=True))
     access_token_table.create(migrate_engine, checkfirst=True)
 
+
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.
     meta = sql.MetaData()
     meta.bind = migrate_engine
 
-    tables = ['consumer_oauth2', 'authorization_token_oauth2', 'consumer_credentials_oauth2',
-                'access_token_oauth2']
+    tables = [
+        'consumer_oauth2',
+        'authorization_token_oauth2',
+        'consumer_credentials_oauth2',
+        'access_token_oauth2'
+    ]
+
     for t in tables:
         table = sql.Table(t, meta, autoload=True)
         table.drop(migrate_engine, checkfirst=True)

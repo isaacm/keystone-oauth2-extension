@@ -19,11 +19,13 @@ def upgrade(migrate_engine):
     meta = sql.MetaData()
     meta.bind = migrate_engine
 
-    authorization_code_table = sql.Table('authorization_code_oauth2', meta, autoload=True)
+    authorization_code_table = sql.Table(
+        'authorization_code_oauth2', meta, autoload=True)
     authorization_code_table.c.state.alter(
-    	sql.Column('state', sql.String(256), nullable=True))
+        sql.Column('state', sql.String(256), nullable=True))
 
-    consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
+    consumer_credentials_table = sql.Table(
+        'consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.state.alter(
         sql.Column('state', sql.String(256), nullable=True))
 
@@ -32,10 +34,12 @@ def downgrade(migrate_engine):
     meta = sql.MetaData()
     meta.bind = migrate_engine
 
-    authorization_code_table = sql.Table('authorization_code_oauth2', meta, autoload=True)
+    authorization_code_table = sql.Table(
+        'authorization_code_oauth2', meta, autoload=True)
     authorization_code_table.c.state.alter(
-    	sql.Column('state', sql.String(64), nullable=True))
+        sql.Column('state', sql.String(64), nullable=True))
 
-    consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
+    consumer_credentials_table = sql.Table(
+        'consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.state.alter(
         sql.Column('state', sql.String(64), nullable=True))

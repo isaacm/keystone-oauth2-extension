@@ -32,7 +32,8 @@ def upgrade(migrate_engine):
     meta.bind = migrate_engine
 
     if 'mysql' in str(meta):
-        access_token_table = sql.Table('access_token_oauth2', meta, autoload=True)
+        access_token_table = sql.Table(
+            'access_token_oauth2', meta, autoload=True)
         consumer_oauth2 = sql.Table('consumer_oauth2', meta, autoload=True)
 
         ForeignKeyConstraint(
@@ -45,13 +46,15 @@ def upgrade(migrate_engine):
             refcolumns=[consumer_oauth2.c.id],
             name='access_token_oauth2_ibfk_1', ondelete='CASCADE').create()
 
+
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.
     meta = sql.MetaData()
     meta.bind = migrate_engine
 
     if 'mysql' in str(meta):
-        access_token_table = sql.Table('access_token_oauth2', meta, autoload=True)
+        access_token_table = sql.Table(
+            'access_token_oauth2', meta, autoload=True)
         consumer_oauth2 = sql.Table('consumer_oauth2', meta, autoload=True)
 
         ForeignKeyConstraint(

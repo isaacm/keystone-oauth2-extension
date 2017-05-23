@@ -47,6 +47,7 @@ EXTENSION_DATA = {
 extension.register_admin_extension(EXTENSION_DATA['alias'], EXTENSION_DATA)
 extension.register_public_extension(EXTENSION_DATA['alias'], EXTENSION_DATA)
 
+
 def filter_consumer(consumer_ref):
     """Filter out private items in a consumer dict.
 
@@ -59,6 +60,7 @@ def filter_consumer(consumer_ref):
         consumer_ref = consumer_ref.copy()
         consumer_ref.pop('secret', None)
     return consumer_ref
+
 
 class Server(oauth2lib.AuthorizationEndpoint, oauth2lib.TokenEndpoint,
              oauth2lib.ResourceEndpoint, oauth2lib.RevocationEndpoint):
@@ -109,7 +111,6 @@ class Server(oauth2lib.AuthorizationEndpoint, oauth2lib.TokenEndpoint,
         oauth2lib.ResourceEndpoint.__init__(self, default_token='Bearer',
                                   token_types={'Bearer': bearer})
         oauth2lib.RevocationEndpoint.__init__(self, request_validator)
-
 
 
 @dependency.provider('oauth2_api')

@@ -32,20 +32,27 @@ class UrlencodedBodyMiddleware(wsgi.Middleware):
 
     def process_request(self, request):
         """Transform the request from urlencoded to JSON."""
-        incoming_urlencoded = 'application/x-www-form-urlencoded' in str(request.content_type)
+        incoming_urlencoded = (
+            'application/x-www-form-urlencoded' in str(request.content_type)
+        )
         if incoming_urlencoded and request.body:
-            LOG.info('URLENCODED_MIDDLEWARE: serializing incoming urlencoded to JSON')
+            LOG.info(
+                'URLENCODED_MIDDLEWARE: serializing '
+                'incoming urlencoded to JSON')
             request.content_type = 'application/json'
             try:
-                request.body = jsonutils.dumps(
-                    {'token_request':dict(urlparse.parse_qsl(request.body))})
-                LOG.debug('URLENCODED_MIDDLEWARE: decoded body to {0}'.format(request.body))
-            except Exception:
-                LOG.exception('URLENCODED_MIDDLEWARE: Serializer failed')
+                request.body = jsonutils.dumps({
+                    'token_request': dict(urlparse.parse_qsl(request.body))
+                })
+                LOG.debug('URLENCODED_MIDDLEWARE: decoded body to {0}'.format(
+                    request.body))
+            except Exception as exc:
+                LOG.exception(
+                    'URLENCODED_MIDDLEWARE: Serializer failed {0}'.format(exc))
                 e = exception.ValidationError(attribute='valid urlencoded',
                                               target='request body')
                 return wsgi.render_exception(e, request=request)
 
     def process_response(self, request, response):
-        """Dont transform JSON to urlencoded, no need for that."""
+        """Don't transform JSON to urlencoded, no need for that."""
         return response

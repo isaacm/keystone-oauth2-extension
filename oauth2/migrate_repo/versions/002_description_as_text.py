@@ -20,7 +20,7 @@ def upgrade(migrate_engine):
     meta.bind = migrate_engine
     user_table = sql.Table('consumer_oauth2', meta, autoload=True)
     user_table.c.description.alter(
-    	sql.Column('description', sql.Text(), nullable=True))
+        sql.Column('description', sql.Text(), nullable=True))
 
 
 def downgrade(migrate_engine):
@@ -28,4 +28,4 @@ def downgrade(migrate_engine):
     meta.bind = migrate_engine
     user_table = sql.Table('consumer_oauth2', meta, autoload=True)
     user_table.c.description.alter(
-    	sql.Column('description', sql.String(64), nullable=True))
+        sql.Column('description', sql.String(64), nullable=True))

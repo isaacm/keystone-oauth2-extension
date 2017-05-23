@@ -25,11 +25,13 @@ def upgrade(migrate_engine):
                    sql.Enum('code', 'token', name='response_type'),
                    nullable=False))
 
-    consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
+    consumer_credentials_table = sql.Table(
+        'consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.response_type.alter(
         sql.Column('response_type',
                    sql.Enum('code', 'token', name='response_type'),
                    nullable=False))
+
 
 def downgrade(migrate_engine):
     meta = sql.MetaData()
@@ -41,7 +43,8 @@ def downgrade(migrate_engine):
                    sql.Enum('code', name='response_type'),
                    nullable=False))
 
-    consumer_credentials_table = sql.Table('consumer_credentials_oauth2', meta, autoload=True)
+    consumer_credentials_table = sql.Table(
+        'consumer_credentials_oauth2', meta, autoload=True)
     consumer_credentials_table.c.response_type.alter(
         sql.Column('response_type',
                    sql.Enum('code', name='response_type'),
