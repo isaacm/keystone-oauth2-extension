@@ -38,7 +38,7 @@ Add oauth2 import and module to conf_modules in `keystone/conf/__init__.py`
 
 9. Check Python dependencies. This extension uses [OAuthLib](https://oauthlib.readthedocs.org/en/latest/), tested to work with versions >=0.7.2, <=1.0.3. This is already a dependency in Keystone and you should not need to install it again, but if you are not using the standard Keystone installation, make sure to add it.
 
-10. Create database tables. Copy `migrate_repo/latest_add_oauth2_tables` to `keystone/common/sql/migrate_repo/versions`, and replace the leading `latest` to the latest_version+1, where latest_version is the keystone repo's latest version numbe, then execute:
+10. Create database tables. Copy `migrate_repo/latest_add_oauth2_tables.py` to `keystone/common/sql/migrate_repo/versions/`, and replace the leading `latest` to the latest_version+1, where latest_version is the keystone repo's latest version numbe, then execute:
 `tools/with_venv.sh keystone-manage db_sync` to create oauth2 related tables
 
 
