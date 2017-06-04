@@ -22,11 +22,13 @@ from keystone import notifications
 from keystone.common import dependency
 from keystone.common import extension
 from keystone.common import manager
+import keystone.conf
 from oslo_log import log
 
 from oauthlib import oauth2 as oauth2lib
 
 
+CONF = keystone.conf.CONF
 LOG = log.getLogger(__name__)
 
 EXTENSION_DATA = {
@@ -121,10 +123,12 @@ class Manager(manager.Manager):
     how this dynamically calls the backend.
 
     """
+    driver_namespace = 'keystone.oauth2'
+
 
     def __init__(self):
         super(Manager, self).__init__(
-            'keystone.contrib.oauth2.backends.sql.OAuth2')# TODO(garcianavalon) set as configuration option in keystone.conf
+            CONF.oauth2.driver)# TODO(garcianavalon) set as configuration option in keystone.conf
         notifications.register_event_callback(
             notifications.ACTIONS.deleted, 'consumer',
             self.delete_consumer)

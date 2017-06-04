@@ -25,12 +25,6 @@ To install this extension in Keystone, you have to do the following:
    methods=external,password,token,<b>oauth2</b>
    </pre>
 
-   At the end of the section you have to add this:
-   ```
-   # The oauth2 plugin module (string value)
-   oauth2=keystone.auth.plugins.oauth2.OAuth2
-   ```
-
 7. Define new policies in your `policy.json` file (the one placed in the `etc` folder in your Keystone project) for the following targets: 
    ```
    identity:list_authorization_codes
@@ -39,9 +33,12 @@ To install this extension in Keystone, you have to do the following:
    ```
 The file `config/policy.json` contains default values you can use, as well as other required policies which Keystone should include by default.
 
-8. Check Python dependencies. This extension uses [OAuthLib](https://oauthlib.readthedocs.org/en/latest/), tested to work with versions >=0.7.2, <=1.0.3. This is already a dependency in Keystone and you should not need to install it again, but if you are not using the standard Keystone installation, make sure to add it.
+8. Create a config registration file `keystone/conf/oauth2.py`, by copying `keystone/conf/oauth1.py` and change the string `oauth1` to `oauth2` in the content.
+Add oauth2 import and module to conf_modules in `keystone/conf/__init__.py`
 
-9. Create database tables. Execute:
-`tools/with_venv.sh keystone-manage db_sync --extension oauth2`
+9. Check Python dependencies. This extension uses [OAuthLib](https://oauthlib.readthedocs.org/en/latest/), tested to work with versions >=0.7.2, <=1.0.3. This is already a dependency in Keystone and you should not need to install it again, but if you are not using the standard Keystone installation, make sure to add it.
+
+10. Create database tables. Copy `migrate_repo/latest_add_oauth2_tables` to `keystone/common/sql/migrate_repo/versions`, and replace the leading `latest` to the latest_version+1, where latest_version is the keystone repo's latest version numbe, then execute:
+`tools/with_venv.sh keystone-manage db_sync` to create oauth2 related tables
 
 
