@@ -34,7 +34,14 @@ To install this extension in Keystone, you have to do the following:
 The file `config/policy.json` contains default values you can use, as well as other required policies which Keystone should include by default.
 
 8. Create a config registration file `keystone/conf/oauth2.py`, by copying `keystone/conf/oauth1.py` and change the string `oauth1` to `oauth2` in the content.
-Add oauth2 import and module to conf_modules in `keystone/conf/__init__.py`
+Add oauth2 import and module to conf_modules in `keystone/conf/__init__.py`. Then add this:
+	```
+	keystone.auth.oauth2 =
+	default = keystone.auth.plugins.oauth2:OAuth2
+	keystone.oauth2 =
+    sql = keystone.contrib.oauth2.backends.sql:OAuth2
+	```
+To the `keystone/setup.cfg` file 
 
 9. Check Python dependencies. This extension uses [OAuthLib](https://oauthlib.readthedocs.org/en/latest/), tested to work with versions >=0.7.2, <=1.0.3. This is already a dependency in Keystone and you should not need to install it again, but if you are not using the standard Keystone installation, make sure to add it.
 
