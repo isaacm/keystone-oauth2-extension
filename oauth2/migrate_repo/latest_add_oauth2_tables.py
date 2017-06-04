@@ -14,8 +14,22 @@
 
 import sqlalchemy as sql
 
+from keystone.common.sql import upgrades
+
 
 def upgrade(migrate_engine):
+    try:
+        extension_version = upgrades.get_db_version(
+            extension='oauth2',
+            engine=migrate_engine)
+    except Exception:
+        extension_version = 0
+
+    # This migration corresponds to oauth2 extension migration 8. Only
+    # update if it has not been run.
+    if extension_version >= 8:
+        return
+
     # Upgrade operations go here. Don't create your own engine; bind
     # migrate_engine to your metadata
     meta = sql.MetaData()
